@@ -3,48 +3,49 @@
 /**
  * (1) x is a string, b/c we’ve initialized it
  */
-// let x = "hello world";
+let x = "hello world"; 
+// just a basic variable declaration
+// let makes it so that the var of x can hold any string
+
 
 /**
  * (2) reassignment is fine
  */
-// x = "hello mars";
+x = "hello mars";
+// quick reminder that "let" can be reassigned and "const" cannot
 
 /**
  * (3) but if we try to change type
  */
-// x = 42; // 🚨 ERROR
+x = 42; // 🚨 ERROR
 
 /**
  * (4) let's look at const. The type is literally 'hello world'
  */
-// const y = "hello world";
-
+const y = "hello world";
 /**
- * This is called a 'string literal type'. y can never be reassigned since it's a const,
- * so we can regard it as only ever holding a value that's literally the string 'hello world'
- * and no other possible value
+ * This is called a '@string @literal @type'. y can never be reassigned since it's a const, so we can regard it as only ever holding a value that's literally the string 'hello world' and no other possible value
+ * const makes it so that y can hold specifically a string whose val is "hello world", and no other string
+ * i.e. you're enumerating a set of allowed vals (specific strs, specific nums, etc) and you can only pick from one of that set of options
  */
 
 /**
  * (5) sometimes we need to declare a variable w/o initializing it
  */
-// let z;
-// z = 41;
-// z = "abc"; // (6) oh no! This isn't good
+let z; // z takes on a type called "any" (it's a wildcard)---it's aka a "Top Type"
+z = 41;
+z = "abc"; // (6) oh no! This isn't good
 
 /**
- * If we look at the type of z, it's `any`. This is the most flexible type
- * in TypeScript (think of it like a JavaScript `let`)
+ * If we look at the type of z, it's `any`. This is the most flexible type in TypeScript (think of it like a JavaScript `let`)
  */
 
 /**
- * (7) we could improve this situation by providing a type annotation
- * when we declare our variable
+ * (7) we could improve this situation in No. 5 by providing a "type annotation" when we declare our variable
  */
-// let zz: number;
-// zz = 41;
-// zz = "abc"; // 🚨 ERROR Type '"abc"' is not assignable to type 'number'.
+let zz: number; // this is called a "type annotation" // "You don't have an initializer, but I'm telling you what you're designed to hold"
+zz = 41;
+zz = "abc"; // 🚨 ERROR Type '"abc"' is not assignable to type 'number'.
 
 //== SIMPLE ARRAYS ==//
 

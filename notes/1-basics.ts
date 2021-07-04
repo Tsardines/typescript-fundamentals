@@ -52,27 +52,34 @@ zz = "abc"; // 🚨 ERROR Type '"abc"' is not assignable to type 'number'.
 /**
  * (8) simple array types can be expressed using []
  */
-// let aa: number[] = [];
-// aa.push(33);
-// aa.push("abc"); // 🚨 ERROR: Argument of type '"abc"' is not assignable to parameter of type 'number'.
+let aa: number[] = [];
+// let aa = []; // 🚨 ERROR: Arg of type number (or str for L58) is not assignable to param of type "never"
+// This is an "Array of nevers". It can never happen (never going to work)
+aa.push(33);
+aa.push("abc"); // 🚨 ERROR: Argument of type '"abc"' is not assignable to parameter of type 'number'.
 
 /**
  * (9) we can even define a tuple, which has a fixed length
  */
-// let bb: [number, string, string, number] = [
-//   123,
-//   "Fake Street",
-//   "Nowhere, USA",
-//   10110
-// ];
+let bb: [number, string, string, number] = [ 
+    // this arr can only be of length 4
+    // and the types of their members must be exactly as we declare them
+  123,
+  "Rue de Honore",
+  "Beauclair, Toussaint",
+  10110
+];
 
-// bb = [1, 2, 3]; // 🚨 ERROR: Type 'number' is not assignable to type 'string'.
+bb = [1, 2, 3]; // 🚨 ERROR: Type 'number' is not assignable to type 'string'.
+bb.push(1, 3, 4, 5, 4) // note that this will not err
+// There is no type safety when pushing vals to a tuple---so you want to be careful to set its value, access its value, and not use the arr methods bc they're not type safe
+// There's no way to "safety type push" based on the number of elems it currently has
 
 /**
  * (10) Tuple values often require type annotations (  : [number, number] )
  */
-// const xx = [32, 31]; // number[];
-// const yy: [number, number] = [32, 31];
+const xx = [32, 31]; // number[]; // TS will consider this to be an arr of nums (and NOT a tuple)
+const yy: [number, number] = [32, 31]; // So you need to have the [number, number] type annotation here to make it a tuple
 
 //== OBJECTS ==//
 

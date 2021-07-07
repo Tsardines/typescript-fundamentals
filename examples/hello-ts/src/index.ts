@@ -20,3 +20,5 @@ export async function addNumbers(a: number, b: number) {
 (async () => {
   console.log('result is:', await addNumbers(3, 4));
 })();
+
+

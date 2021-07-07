@@ -14,13 +14,16 @@
     "@types/chai": "4.2.18",
     "@types/mocha": "5.2.7",
     "@types/node": "12.20.15",
-    "@typescript-eslint/eslint-plugin": "2.34.0",
-    "@typescript-eslint/parser": "2.34.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "chai": "4.3.4",
     "dtslint": "0.9.9",
     "eslint": "6.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "lerna": "3.22.1",
     "mocha": "6.2.3",
+    "prettier": "^2.3.0",
     "rimraf": "3.0.2",
     "semantic-release": "15.14.0",
     "source-map-support": "0.5.19",
@@ -37,7 +40,8 @@
     "build": "lerna run build",
     "test": "lerna run test",
     "postinstall": "lerna link",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "release": {
     "extends": "@mike-works/workshop-semantic-release-config",

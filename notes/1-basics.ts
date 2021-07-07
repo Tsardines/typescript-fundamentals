@@ -86,15 +86,15 @@ const yy: [number, number] = [32, 31]; // So you need to have the [number, numbe
 /**
  * (11) object types can be expressed using {} and property names
  */
-// let cc: { houseNumber: number; streetName: string };
-// cc = {
-//   streetName: "Fake Street",
-//   houseNumber: 123
-// };
+let cc: { houseNumber: number; streetName: string };
+cc = {
+  streetName: "Rue de Honore",
+  houseNumber: 123
+}
 
-// cc = {
-//   houseNumber: 33
-// };
+cc = { // Picture this: Before the = sign, TS is trying to get the left and right sides to agree w/ each other ("are they compatible?")
+  houseNumber: 33
+};
 /**
  * 🚨 Property 'streetName'
  * 🚨   is missing in type   '{ houseNumber: number; }'
@@ -105,18 +105,18 @@ const yy: [number, number] = [32, 31]; // So you need to have the [number, numbe
  * (12) You can use the optional operator (?) to
  * indicate that something may or may not be there
  */
-// let dd: { houseNumber: number; streetName?: string };
-// dd = {
-//   houseNumber: 33
-// };
+let dd: { houseNumber: number; streetName?: string }; // Note the ? ("It may or may not be there"---it's optional)
+dd = {
+  houseNumber: 33
+};
 
-// (13) if we want to re-use this type, we can create an interface
-// interface Address {
-//   houseNumber: number;
-//   streetName?: string;
-// }
-// // and refer to it by name
-// let ee: Address = { houseNumber: 33 };
+// (13) if we want to re-use this type (re-use anywhere we were using a type before), we can create an interface
+interface Address {
+  houseNumber: number;
+  streetName?: string;
+}
+// and refer to it by name
+let ee: Address = { houseNumber: 33 };
 
 //== UNION & INTERSECTION ==//
 
@@ -125,44 +125,48 @@ const yy: [number, number] = [32, 31]; // So you need to have the [number, numbe
  * Sometimes we have a type that can be one of several things
  */
 
-// export interface HasPhoneNumber {
-//   name: string;
-//   phone: number;
-// }
+export interface HasPhoneNumber {
+  name: string;
+  phone: number;
+}
 
-// export interface HasEmail {
-//   name: string;
-//   email: string;
-// }
+export interface HasEmail {
+  name: string;
+  email: string;
+}
 
-// let contactInfo: HasEmail | HasPhoneNumber =
-//   Math.random() > 0.5
-//     ? {
-//         // we can assign it to a HasPhoneNumber
-//         name: "Mike",
-//         phone: 3215551212
-//       }
-//     : {
-//         // or a HasEmail
-//         name: "Mike",
-//         email: "mike@example.com"
-//       };
+// Think of the above like a Venn diagram (they both nave name, but one has phone and the other has email)
 
-// contactInfo.name; // NOTE: we can only access the .name property  (the stuff HasPhoneNumber and HasEmail have in common)
+let contactInfo: HasEmail | HasPhoneNumber =
+  Math.random() > 0.5
+    ? {
+        // half the time it's initialized to HasPhoneNumber
+        name: "Geralt",
+        phone: 3215551212
+      }
+    : {
+        // if not, then HasEmail
+        name: "Geralt",
+        email: "Geralt@kaermorhen.com"
+      };
+
+contactInfo.name; 
+// NOTE: we can only access the .name property  (the stuff HasPhoneNumber and HasEmail have in common)
+// .name is the INTERSECTION between the two
 
 /**
  * (15) Intersection types
  */
-// let otherContactInfo: HasEmail & HasPhoneNumber = {
-//   // we _must_ initialize it to a shape that's asssignable to HasEmail _and_ HasPhoneNumber
-//   name: "Mike",
-//   email: "mike@example.com",
-//   phone: 3215551212
-// };
+let otherContactInfo: HasEmail & HasPhoneNumber = {
+  // "otherContactInfo is BOTH HasEmail and HasPhoneNumber"
+  // we _must_ initialize it to a shape that's asssignable to HasEmail _and_ HasPhoneNumber
+  name: "Yennefer",
+  email: "yennefer@aedirn.gov",
+  phone: 3215551212
+};
 
-// otherContactInfo.name; // NOTE: we can access anything on _either_ type
-// otherContactInfo.email;
-// otherContactInfo.phone;
-// const zzz: any = {} as never;
+otherContactInfo.name; // NOTE: we can access anything on _either_ type
+otherContactInfo.email;
+otherContactInfo.phone;
 
 export default {};

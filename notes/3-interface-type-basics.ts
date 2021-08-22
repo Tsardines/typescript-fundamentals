@@ -2,53 +2,79 @@ import { HasPhoneNumber, HasEmail } from "./1-basics";
 
 //== TYPE ALIAS ==//
 /**
- * (1) Type aliases allow us to give a type a name
+ * @One (1) - Type aliases allow us to give a type a name
  */
-// type StringOrNumber = string | number;
+type StringOrNumber = string | number;
+const x: string | number; // means that "anything that could exist in this space, you can create a type alias for"
+// This is NOT true for interfaces
 
-// // this is the ONLY time you'll see a type on the RHS of assignment
-// type HasName = { name: string };
+// this is the ONLY time you'll see a type on the right hand side of assignment:
+type HasName = { name: string };
+
+// this is working within the type space---this won't compile to JS at all (open up the JS file for this, you'll see)
+
+// Challenge w/ type aliases: 
+// They're defined and figured out by the compiler in terms of what vals are allowed inline, as the file is parsed
+// This prevents you from creating self-referential types 
 
 // NEW in TS 3.7: Self-referencing types!
-type NumVal = 1 | 2 | 3 | NumVal[];
+const x = [1, 2, 3, 1, 1, [3, 1, 1, 2]] // there's some hierarchy here, in a set of allowed vals
+type NumVal = 1 | 2 | 3 | NumVal[]; // Could try to type this ("the val can be 1, 2, or 3...or an arr, where an arr is an arr of NumVals")
+// However, TS isn't happy bc it wants to know what NumVal is all about before it moves onto the next line
+typeNumArr = NumVal[]; // It hasn't yet encountered this, so it runs into a circular problem
+// However...this weekness can be used as a strenth. Down below we'll get into it
+
+
 
 // == INTERFACE == //
 /**
- * (2) Interfaces can extend from other interfaces
+ * @Two (2) Interfaces can extend FROM other interfaces
  */
 
-// export interface HasInternationalPhoneNumber extends HasPhoneNumber {
-//   countryCode: string;
-// }
+// Bear in mind that extends is used for inheritance of LIKE things
+// Interfaces extend from interfaces
+// Classes extend from classes
+export interface HasInternationalPhoneNumber extends HasPhoneNumber { 
+  countryCode: string; // Here, we're adding countryCode to something that already has a phone number
+}
 
 /**
- * (3) they can also be used to describe call signatures
+ * @Three (3) they can also be used to describe call signatures
  */
 
-// interface ContactMessenger1 {
-//   (contact: HasEmail | HasPhoneNumber, message: string): void;
-// }
+// Interfaces CANNOT handle primitive types, or operators used w/ types (like strs or nums)
 
-// type ContactMessenger2 = (
-//   contact: HasEmail | HasPhoneNumber,
-//   message: string
-// ) => void;
+// == This is the obj signature == //
+interface ContactMessenger1 { // Using an interface to describe a function (can also describe objs and arrs)
+  (contact: HasEmail | HasPhoneNumber, message: string): void; // Notice how it has : void;
+}
 
-// // NOTE: we don't need type annotations for contact or message
-// const emailer: ContactMessenger1 = (_contact, _message) => {
-//   /** ... */
-// };
+// == And HERE is the equivalent w/ the type == //
+type ContactMessenger2 = ( // notice how it has no {}
+  contact: HasEmail | HasPhoneNumber,
+  message: string
+) => void; // Notice => void // Needs the phat arrow to define a func type w/ a type alias (or else it's invalid)
+
+// NOTE: We don't need type annotations for contact or message (to figure out what the return type should be)
+// Callbacks work in a similar way: 
+// // If you say "I accept the call back and its value like the signature should be XYZ"
+// // At every invocation site, every time you pass a call back along you can forget the type info
+// // The type checking still happens, so you don't need to be so explicit along the way
+const emailer: ContactMessenger1 = (_contact, _message) => {
+  /** ... */
+};
 
 /**
- * (4) construct signatures can be described as well
+ * @Four (4) construct signatures can be described as well (look similar to call signatures)
  */
 
-// interface ContactConstructor {
-//   new (...args: any[]): HasEmail | HasPhoneNumber;
-// }
+interface ContactConstructor {
+  new (...args: any[]): HasEmail | HasPhoneNumber; // All you need is "new" at the start // Classes use "new"---classes are newable
+  // The above describes things that have an email address or a phone #, and definitely have a name
+}
 
 /**
- * (5) index signatures describe how a type will respond to property access
+ * @Five (5) index signatures describe how a type will respond to property access
  */
 
 /**
@@ -59,25 +85,29 @@ type NumVal = 1 | 2 | 3 | NumVal[];
  * }
  */
 
-// interface PhoneNumberDict {
-//   // arr[0],  foo['myProp']
-//   [numberName: string]:
-//     | undefined
-//     | {
-//         areaCode: number;
-//         num: number;
-//       };
-// }
+interface PhoneNumberDict {
+  // arr[0],  foo['myProp']
+  [numberName: string]: 
+      // [] makes sense, bc they're how we access a property off of an obj w/ an arbitrary key
+  // "If you access a prop off of a phone number dict and give it a string, either it'll not be there at all or it'll have this form"
+    | undefined
+    | {
+        areaCode: number;
+        num: number;
+      };
+}
 
-// const phoneDict: PhoneNumberDict = {
-//   office: { areaCode: 321, num: 5551212 },
-//   home: { areaCode: 321, num: 5550010 } // try editing me
-// };
+const phoneDict: PhoneNumberDict = {
+  office: { areaCode: 321, num: 5551212 },
+  home: { areaCode: 321, num: 5550010 } // try editing me (i.e. misspelling something)
+};
 
-// at most, a type may have one string and one number index signature
+// At most, a type may have one string idx signature and one number idx signature
+// i.e. L90, you could change string to "number" and have something slightly different than
+// if you passed a str in and tried to access a property that way
 
 /**
- * (6) they may be used in combination with other types
+ * @Six (6) they may be used in combination with other types
  */
 
 // // augment the existing PhoneNumberDict
@@ -101,18 +131,20 @@ type NumVal = 1 | 2 | 3 | NumVal[];
 // phoneDict.office; // definitely present
 // phoneDict.mobile; // MAYBE present
 
+
+
+
+
 // == TYPE ALIASES vs INTERFACES == //
 
 /**
- * (7) Type aliases are initialized synchronously, but
- * -   can reference themselves
+ * @Seven (7) Type aliases are initialized synchronously, but can reference themselves
  */
 
 // type NumberVal = 1 | 2 | 3 | NumberVal[];
 
 /**
- * (8) Interfaces are initialized lazily, so combining it
- * -   w/ a type alias allows for recursive types!
+ * @Eight (8) Interfaces are initialized lazily, so combining it w/ a type alias allows for recursive types!
  */
 
 // type StringVal = "a" | "b" | "c" | StringArr;

@@ -6,9 +6,7 @@ var x; // means that "anything that could exist in this space, you can create a 
 // They're defined and figured out by the compiler in terms of what vals are allowed inline, as the file is parsed
 // This prevents you from creating self-referential types 
 // NEW in TS 3.7: Self-referencing types!
-var x = [1, 2, 3, 1, 1, [3, 1, 1, 2]]; // there's some hierarchy here, in a set of allowed vals
-// However, TS isn't happy bc it wants to know what NumVal is all about before it moves onto the next line
-typeNumArr = NumVal[]; // It hasn't yet encountered this, so it runs into a circular problem
+var y = [1, 2, 3, 1, 1, [3, 1, 1, 2]]; // there's some hierarchy here, in a set of allowed vals
 // NOTE: We don't need type annotations for contact or message (to figure out what the return type should be)
 // Callbacks work in a similar way: 
 // // If you say "I accept the call back and its value like the signature should be XYZ"

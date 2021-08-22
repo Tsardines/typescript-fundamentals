@@ -18,13 +18,13 @@ type HasName = { name: string };
 // This prevents you from creating self-referential types 
 
 // NEW in TS 3.7: Self-referencing types!
-const x = [1, 2, 3, 1, 1, [3, 1, 1, 2]] // there's some hierarchy here, in a set of allowed vals
+const y = [1, 2, 3, 1, 1, [3, 1, 1, 2]] // there's some hierarchy here, in a set of allowed vals
 type NumVal = 1 | 2 | 3 | NumVal[]; // Could try to type this ("the val can be 1, 2, or 3...or an arr, where an arr is an arr of NumVals")
 // However, TS isn't happy bc it wants to know what NumVal is all about before it moves onto the next line
-typeNumArr = NumVal[]; // It hasn't yet encountered this, so it runs into a circular problem
+// typeNumArr = NumVal[]; // It hasn't yet encountered this, so it runs into a circular problem
 // However...this weekness can be used as a strenth. Down below we'll get into it
 
-
+// ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  // 
 
 // == INTERFACE == //
 /**
@@ -37,6 +37,8 @@ typeNumArr = NumVal[]; // It hasn't yet encountered this, so it runs into a circ
 export interface HasInternationalPhoneNumber extends HasPhoneNumber { 
   countryCode: string; // Here, we're adding countryCode to something that already has a phone number
 }
+
+
 
 /**
  * @Three (3) they can also be used to describe call signatures
@@ -64,6 +66,8 @@ const emailer: ContactMessenger1 = (_contact, _message) => {
   /** ... */
 };
 
+
+
 /**
  * @Four (4) construct signatures can be described as well (look similar to call signatures)
  */
@@ -72,6 +76,8 @@ interface ContactConstructor {
   new (...args: any[]): HasEmail | HasPhoneNumber; // All you need is "new" at the start // Classes use "new"---classes are newable
   // The above describes things that have an email address or a phone #, and definitely have a name
 }
+
+
 
 /**
  * @Five (5) index signatures describe how a type will respond to property access
@@ -106,33 +112,35 @@ const phoneDict: PhoneNumberDict = {
 // i.e. L90, you could change string to "number" and have something slightly different than
 // if you passed a str in and tried to access a property that way
 
+
+
 /**
  * @Six (6) they may be used in combination with other types
  */
 
-// // augment the existing PhoneNumberDict
-// // i.e., imported it from a library, adding stuff to it
-// interface PhoneNumberDict {
-//   home: {
-//     /**
-//      * (7) interfaces are "open", meaning any declarations of the
-//      * -   same name are merged
-//      */
-//     areaCode: number;
-//     num: number;
-//   };
-//   office: {
-//     areaCode: number;
-//     num: number;
-//   };
-// }
+// augment the existing PhoneNumberDict
+// i.e., imported it from a library, adding stuff to it
+interface PhoneNumberDict { // This is an interf w/ the same name of what we were just using (see L106)
+  home: { // We've added new types that kind of say "We have new required properties" "Everyone must have a home # and an office #"
+    /**
+     * @SixPointFive (6.5) interfaces are "open", meaning any declarations of the
+     * -   same name are merged
+     */
+    areaCode: number;
+    num: number;
+  };
+  office: {
+    areaCode: number;
+    num: number;
+  };
+}
 
-// phoneDict.home;   // definitely present
-// phoneDict.office; // definitely present
-// phoneDict.mobile; // MAYBE present
+phoneDict.home;   // definitely present
+phoneDict.office; // definitely present
+phoneDict.mobile; // MAYBE present // mobile will have the "undefined" due to the idx signature
 
 
-
+// ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  // 
 
 
 // == TYPE ALIASES vs INTERFACES == //
@@ -142,6 +150,8 @@ const phoneDict: PhoneNumberDict = {
  */
 
 // type NumberVal = 1 | 2 | 3 | NumberVal[];
+
+
 
 /**
  * @Eight (8) Interfaces are initialized lazily, so combining it w/ a type alias allows for recursive types!
